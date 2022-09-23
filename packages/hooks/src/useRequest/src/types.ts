@@ -2,7 +2,13 @@ import type { DependencyList } from 'react';
 import type Fetch from './Fetch';
 import type { CachedData } from './utils/cache';
 
+/**
+ * @description 请求方法
+ * @returns Promise
+ */
 export type Service<TData, TParams extends any[]> = (...args: TParams) => Promise<TData>;
+
+/** 更新发布通知方法 */
 export type Subscribe = () => void;
 
 // for Fetch
@@ -36,8 +42,7 @@ export interface PluginReturn<TData, TParams extends any[]> {
   onMutate?: (data: TData) => void;
 }
 
-// for useRequestImplement
-
+/** @description 配置项 */
 export interface Options<TData, TParams extends any[]> {
   manual?: boolean;
 
@@ -93,6 +98,9 @@ export interface Options<TData, TParams extends any[]> {
   // [key: string]: any;
 }
 
+/**
+ *  @description 插件
+ */
 export type Plugin<TData, TParams extends any[]> = {
   (fetchInstance: Fetch<TData, TParams>, options: Options<TData, TParams>): PluginReturn<
     TData,
@@ -101,13 +109,7 @@ export type Plugin<TData, TParams extends any[]> = {
   onInit?: (options: Options<TData, TParams>) => Partial<FetchState<TData, TParams>>;
 };
 
-// for index
-// export type OptionsWithoutFormat<TData, TParams extends any[]> = Omit<Options<TData, TParams>, 'formatResult'>;
-
-// export interface OptionsWithFormat<TData, TParams extends any[], TFormated, TTFormated extends TFormated = any> extends Omit<Options<TTFormated, TParams>, 'formatResult'> {
-//   formatResult: (res: TData) => TFormated;
-// };
-
+/** useRequest暴露的属性 */
 export interface Result<TData, TParams extends any[]> {
   loading: boolean;
   data?: TData;

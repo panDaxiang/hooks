@@ -10,6 +10,7 @@ const useAutoRunPlugin: Plugin<any, any[]> = (
   const hasAutoRun = useRef(false);
   hasAutoRun.current = false;
 
+  /** 坚挺ready变化，请求 */
   useUpdateEffect(() => {
     if (!manual && ready) {
       hasAutoRun.current = true;
@@ -17,6 +18,7 @@ const useAutoRunPlugin: Plugin<any, any[]> = (
     }
   }, [ready]);
 
+  // 坚挺依赖变化，请求
   useUpdateEffect(() => {
     if (hasAutoRun.current) {
       return;

@@ -12,12 +12,15 @@ const useDebouncePlugin: Plugin<any, any[]> = (
   const options = useMemo(() => {
     const ret: DebounceSettings = {};
     if (debounceLeading !== undefined) {
+      // 指定在延迟开始前调用
       ret.leading = debounceLeading;
     }
     if (debounceTrailing !== undefined) {
+      // 指定在延迟结束后调用
       ret.trailing = debounceTrailing;
     }
     if (debounceMaxWait !== undefined) {
+      // 设置 func 允许被延迟的最大值
       ret.maxWait = debounceMaxWait;
     }
     return ret;
@@ -28,15 +31,22 @@ const useDebouncePlugin: Plugin<any, any[]> = (
       const _originRunAsync = fetchInstance.runAsync.bind(fetchInstance);
 
       debouncedRef.current = debounce(
+        // 要防抖动的函数
         (callback) => {
           callback();
         },
+        // 需要延迟的毫秒数
         debounceWait,
+        // 选项对象
         options,
       );
 
       // debounce runAsync should be promise
       // https://github.com/lodash/lodash/issues/4400#issuecomment-834800398
+      /**
+       * 防抖核心是调用了lodash的debounce方法
+       * 修改了调用实例的runAsync方法为返回promise解决异步防抖方法的issue
+       */
       fetchInstance.runAsync = (...args) => {
         return new Promise((resolve, reject) => {
           debouncedRef.current?.(() => {

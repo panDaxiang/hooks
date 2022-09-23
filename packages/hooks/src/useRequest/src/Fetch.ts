@@ -6,6 +6,7 @@ import type { FetchState, Options, PluginReturn, Service, Subscribe } from './ty
 export default class Fetch<TData, TParams extends any[]> {
   pluginImpls: PluginReturn<TData, TParams>[];
 
+  /** 请求次数 */
   count: number = 0;
 
   state: FetchState<TData, TParams> = {
@@ -33,6 +34,7 @@ export default class Fetch<TData, TParams extends any[]> {
       ...this.state,
       ...s,
     };
+    // 发布刷新通知
     this.subscribe();
   }
 
@@ -42,8 +44,10 @@ export default class Fetch<TData, TParams extends any[]> {
     return Object.assign({}, ...r);
   }
 
+  /** 请求调用处理 */
   async runAsync(...params: TParams): Promise<TData> {
     this.count += 1;
+    /** 当前的请求次数 */
     const currentCount = this.count;
 
     const {
@@ -78,8 +82,10 @@ export default class Fetch<TData, TParams extends any[]> {
         servicePromise = this.serviceRef.current(...params);
       }
 
+      // 请求的结果
       const res = await servicePromise;
 
+      // 若是currentCount和this.count不一致，代表当前调用后又执行了请求，需要丢弃结果
       if (currentCount !== this.count) {
         // prevent run.then when request is canceled
         return new Promise(() => {});
