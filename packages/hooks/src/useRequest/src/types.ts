@@ -11,8 +11,7 @@ export type Service<TData, TParams extends any[]> = (...args: TParams) => Promis
 /** 更新发布通知方法 */
 export type Subscribe = () => void;
 
-// for Fetch
-
+/** 请求的状态 */
 export interface FetchState<TData, TParams extends any[]> {
   loading: boolean;
   params?: TParams;
@@ -20,6 +19,16 @@ export interface FetchState<TData, TParams extends any[]> {
   error?: Error;
 }
 
+/**
+ * @description 自定义插件返回的值
+ * @props onBefore 请求发送前执行,此阶段不可中断
+ * @props onRequest 请求发送前执行，可通过stopNow、returnNow中断
+ * @props onSuccess 请求成功
+ * @props onError 请求失败
+ * @props onFinally 请求结束
+ * @props onCancel 中断请求响应时候执行
+ * @props onMutate 修改响应data时候执行
+ */
 export interface PluginReturn<TData, TParams extends any[]> {
   onBefore?: (params: TParams) =>
     | ({
@@ -99,7 +108,8 @@ export interface Options<TData, TParams extends any[]> {
 }
 
 /**
- *  @description 插件
+ * 自定义的useRequest插件;
+ * 插件格式是一个函数，上面或许有属性onInit;
  */
 export type Plugin<TData, TParams extends any[]> = {
   (fetchInstance: Fetch<TData, TParams>, options: Options<TData, TParams>): PluginReturn<

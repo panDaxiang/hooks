@@ -24,21 +24,27 @@ function useRequestImplement<TData, TParams extends any[]>(
 
   const update = useUpdate();
 
+  /** 请求实例，hook的配置项、插件、返回值都绑定在上面 */
   const fetchInstance = useCreation(() => {
+    /** 插件中初始化请求状态 */
     const initState = plugins.map((p) => p?.onInit?.(fetchOptions)).filter(Boolean);
 
     return new Fetch<TData, TParams>(
+      // 请求方法
       serviceRef,
+      // useRequest配置
       fetchOptions,
+      // 更新hook方法
       update,
       Object.assign({}, ...initState),
     );
   }, []);
   fetchInstance.options = fetchOptions;
-  // run all plugins hooks
+  /** 调用所有插件的hook */
   fetchInstance.pluginImpls = plugins.map((p) => p(fetchInstance, fetchOptions));
 
   useMount(() => {
+    // manual为false时，自定发送请求
     if (!manual) {
       // useCachePlugin can set fetchInstance.state.params from cache when init
       const params = fetchInstance.state.params || options.defaultParams || [];
@@ -48,6 +54,7 @@ function useRequestImplement<TData, TParams extends any[]>(
   });
 
   useUnmount(() => {
+    // 组件卸载，请求请求
     fetchInstance.cancel();
   });
 
