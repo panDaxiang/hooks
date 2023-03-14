@@ -5,18 +5,23 @@ import depsAreSame from './depsAreSame';
 import type { BasicTarget } from './domTarget';
 import { getTargetElement } from './domTarget';
 
+/**
+ * @description 创建一个Effect hook
+ * @params useEffect | useLayoutEffect
+ * @returns hook
+ */
 const createEffectWithTarget = (useEffectType: typeof useEffect | typeof useLayoutEffect) => {
   /**
-   *
-   * @param effect
+   * @param effect 副作用函数
    * @param deps
-   * @param target target should compare ref.current vs ref.current, dom vs dom, ()=>dom vs ()=>dom
+   * @param target dom元素 target should compare ref.current vs ref.current, dom vs dom, ()=>dom vs ()=>dom
    */
   const useEffectWithTarget = (
     effect: EffectCallback,
     deps: DependencyList,
     target: BasicTarget<any> | BasicTarget<any>[],
   ) => {
+    /** 是否初始化过 */
     const hasInitRef = useRef(false);
 
     const lastElementRef = useRef<(Element | null)[]>([]);

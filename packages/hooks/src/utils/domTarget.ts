@@ -11,6 +11,11 @@ export type BasicTarget<T extends TargetType = Element> =
   | TargetValue<T>
   | MutableRefObject<TargetValue<T>>;
 
+/**
+ * @description 获取元素
+ * @params 入参可以是多种 dom | () => dom | ref
+ * @returns dom
+ */
 export function getTargetElement<T extends TargetType>(target: BasicTarget<T>, defaultElement?: T) {
   if (!isBrowser) {
     return undefined;

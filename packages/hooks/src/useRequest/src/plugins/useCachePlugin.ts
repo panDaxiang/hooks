@@ -10,10 +10,15 @@ import * as cacheSubscribe from '../utils/cacheSubscribe';
 const useCachePlugin: Plugin<any, any[]> = (
   fetchInstance,
   {
+    // 请求唯一标识
     cacheKey,
+    // 设置缓存数据回收时间
     cacheTime = 5 * 60 * 1000,
+    // 缓存数据保持新鲜时间
     staleTime = 0,
+    // 设置缓存
     setCache: customSetCache,
+    // 读取缓存
     getCache: customGetCache,
   },
 ) => {
