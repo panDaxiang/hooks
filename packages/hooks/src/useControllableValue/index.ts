@@ -37,6 +37,7 @@ function useControllableValue<T = any>(props: Props = {}, options: Options<T> = 
   const value = props[valuePropName] as T;
   const isControlled = props.hasOwnProperty(valuePropName);
 
+  /** 初始化value */
   const initialValue = useMemo(() => {
     if (isControlled) {
       return value;
@@ -48,6 +49,8 @@ function useControllableValue<T = any>(props: Props = {}, options: Options<T> = 
   }, []);
 
   const stateRef = useRef(initialValue);
+
+  // 受控情况下，保持stateRef.current为最新的value
   if (isControlled) {
     stateRef.current = value;
   }
@@ -55,12 +58,16 @@ function useControllableValue<T = any>(props: Props = {}, options: Options<T> = 
   const update = useUpdate();
 
   function setState(v: SetStateAction<T>, ...args: any[]) {
+    // 获取更新后的值
     const r = isFunction(v) ? v(stateRef.current) : v;
 
+    // 非受控才需要主动更新里面的值
     if (!isControlled) {
       stateRef.current = r;
       update();
     }
+
+    /** 触达外部传入事件执行 */
     if (props[trigger]) {
       props[trigger](r, ...args);
     }
